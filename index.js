@@ -4,8 +4,7 @@ dotenv.config();
 import express, { json } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import xss from "xss-clean";
-import mongoSanitize from "express-mongo-sanitize";
+// import mongoSanitize from "express-mongo-sanitize";
 
 import { connectDB } from "./config/db.js";
 
@@ -27,8 +26,7 @@ app.use(
 
 //middleware for security
 app.use(helmet());
-app.use(xss());
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 
 //db connection
 connectDB();

@@ -1,18 +1,26 @@
 import Comment from "../models/comment.model.js";
 
+//delete comment with children
+const deleteCommentWithChildren = async (commentId) => {
+	const comment = await Comment.findById(commentId);
+	if (!comment) {
+		return;
+	}
+	await Promise.all(
+		comment.replies.map((replyId) => deleteCommentWithChildren(replyId))
+	);
+
+	await Comment.deleteOne({ _id: commentId });
+};
+
 export const createComment = async (req, res) => {
 	try {
-		const { content, postId, userId } = req.body;
-		if (userId != req.user.id) {
-			return res
-				.status(403)
-				.json({ message: "You are not allowed to create a comment" });
-		}
+		const { content, postId } = req.body;
 
 		const newComment = await Comment({
 			content,
 			postId,
-			userId,
+			userId: req.user.id,
 		});
 
 		await newComment.save();
@@ -26,7 +34,10 @@ export const createComment = async (req, res) => {
 export const getPostComments = async (req, res) => {
 	try {
 		const id = req.params.id;
-		const comments = await Comment.find({ postId: id }).sort({ createdAt: -1 });
+		const comments = await Comment.find({
+			postId: id,
+			parentComment: null,
+		}).sort({ createdAt: -1 });
 		res.status(200).json({
 			message: "successfully fetched all the comment for the post",
 			comments,
@@ -51,7 +62,7 @@ export const deleteComment = async (req, res) => {
 				.json({ message: "You are not allowed to delete this comment" });
 		}
 
-		await comment.deleteOne();
+		await deleteCommentWithChildren(comment._id);
 		res.status(200).json({ message: "Comment has been deleted successfully" });
 	} catch (error) {
 		res
@@ -126,6 +137,28 @@ export const getComments = async (req, res) => {
 			currentPage: Number(page),
 			totalPages: Math.ceil(totalComments / limit),
 		});
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.message });
+	}
+};
+
+export const reply = async (req, res) => {
+	try {
+		const { postId, commentId, content } = req.body;
+		const newReply = await Comment({
+			content,
+			postId,
+			userId: req.user.id,
+			parentComment: commentId,
+		});
+		const savedReply = await newReply.save();
+		await Comment.findOneAndUpdate(
+			{ _id: commentId, postId },
+			{ $push: { replies: savedReply._id } }
+		);
+		res.status(200).json({ message: "Reply has been created successfully" });
 	} catch (error) {
 		res
 			.status(500)

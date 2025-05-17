@@ -5,7 +5,6 @@ import {
 	signout,
 } from "../controllers/auth.controller.js";
 import { protect } from "../middlewares/authMiddleware.js";
-// import { protect } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 

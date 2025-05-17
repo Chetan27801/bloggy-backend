@@ -30,9 +30,6 @@ const userSchema = new mongoose.Schema(
 		bio: {
 			type: String,
 		},
-		createdAt: {
-			type: Date,
-		},
 	},
 	{ timestamps: true }
 );

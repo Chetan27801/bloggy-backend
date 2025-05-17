@@ -12,6 +12,7 @@ export const generateToken = (id) => {
 //create new user
 export const registerUser = async (req, res) => {
 	try {
+		console.log(req.body);
 		const { name, email, password, avatar, role, bio } = req.body;
 		//data validation
 		if (!name || !email || !password || !role || !bio) {
