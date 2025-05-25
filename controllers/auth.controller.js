@@ -108,3 +108,13 @@ export const signout = async (req, res) => {
 			.json({ message: "Internal Server Error", error: error.message });
 	}
 };
+
+//get me
+export const getUser = async (req, res) => {
+	try {
+		const user = await User.findById(req.user.id);
+		res.status(200).json(user);
+	} catch (error) {
+		res.status(500).json({ message: "Server Error", error: error.message });
+	}
+};
