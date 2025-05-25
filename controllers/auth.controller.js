@@ -12,10 +12,9 @@ export const generateToken = (id) => {
 //create new user
 export const registerUser = async (req, res) => {
 	try {
-		console.log(req.body);
-		const { name, email, password, avatar, role, bio } = req.body;
+		const { name, email, password, avatar, role } = req.body;
 		//data validation
-		if (!name || !email || !password || !role || !bio) {
+		if (!name || !email || !password || !role || !avatar) {
 			return res.status(402).json({ message: "Enter all details" });
 		}
 
@@ -31,7 +30,6 @@ export const registerUser = async (req, res) => {
 			password,
 			avatar,
 			role,
-			bio,
 		});
 		const token = generateToken(user._id);
 		res
@@ -45,7 +43,6 @@ export const registerUser = async (req, res) => {
 				email: user.email,
 				avatar: user.avatar,
 				role: user.role,
-				bio: user.bio,
 				token,
 			});
 	} catch (error) {
@@ -87,7 +84,6 @@ export const loginUser = async (req, res) => {
 				email: user.email,
 				avatar: user.avatar,
 				role: user.role,
-				bio: user.bio,
 				token,
 			});
 	} catch (error) {

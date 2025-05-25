@@ -34,6 +34,9 @@ connectDB();
 //middlewares
 app.use(express.json());
 
+// Serve static files from uploads directory
+app.use("/uploads", express.static("uploads"));
+
 //routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/post", postRouter);

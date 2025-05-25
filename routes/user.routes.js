@@ -17,6 +17,25 @@ router.get("/", protect, roleCheck(["admin"]), getAllUsers);
 router.delete("/delete/:id", protect, roleCheck(["admin"]), deleteUser);
 router.put("/update/:id", protect, updataUser);
 
-router.post("/image-upload", protect, upload.single("image"), imageUpload);
+// Error handling middleware for multer
+const handleMulterError = (error, req, res, next) => {
+	if (error) {
+		console.error("Multer error:", error);
+		if (error.code === "LIMIT_FILE_SIZE") {
+			return res
+				.status(400)
+				.json({ message: "File too large. Maximum size is 5MB." });
+		}
+		return res.status(400).json({ message: error.message });
+	}
+	next();
+};
+
+router.post(
+	"/image-upload",
+	upload.single("image"),
+	handleMulterError,
+	imageUpload
+);
 
 export default router;
