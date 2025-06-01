@@ -29,6 +29,10 @@ const postSchema = new mongoose.Schema(
 			required: true,
 			unique: true,
 		},
+		isDraft: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{ timestamps: true }
 );

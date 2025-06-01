@@ -72,7 +72,14 @@ commentSchema.pre("save", async function (next) {
 
 //auto populate replies and postedBy
 const autoPopulateReplies = function (next) {
-	this.populate({ path: "replies", populate: { path: "userId" } });
+	this.populate({
+		path: "replies",
+		populate: {
+			path: "userId",
+			select: "name email avatar bio role",
+		},
+	});
+	this.populate("userId", "name email avatar bio role");
 	next();
 };
 

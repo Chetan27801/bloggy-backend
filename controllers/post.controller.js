@@ -56,12 +56,13 @@ export const getPosts = async (req, res) => {
 
 		const skip = (Number(page) - 1) * Number(limit);
 
-		const posts = await Post.find(query)
+		const posts = await Post.find(query, { isDraft: false })
 			.sort({
 				[sortBy]: order === "asc" ? 1 : -1,
 			})
 			.skip(skip)
-			.limit(Number(limit));
+			.limit(Number(limit))
+			.populate("userId", "name email avatar bio role");
 		const totalPosts = await Post.countDocuments(query);
 		res.status(200).json({
 			posts,
@@ -80,7 +81,10 @@ export const getPosts = async (req, res) => {
 export const getPostById = async (req, res) => {
 	try {
 		const postId = req.params.id;
-		const post = await Post.findById(postId);
+		const post = await Post.findById(postId).populate(
+			"userId",
+			"name email avatar bio role"
+		);
 
 		if (!post) {
 			return res.status(404).json({ message: "Post not found" });
@@ -102,6 +106,7 @@ export const deletePost = async (req, res) => {
 
 		if (req.user.role === "admin") {
 			await Post.findByIdAndDelete(postId);
+			res.status(200).json({ message: "Post has been deleted successfully" });
 		} else {
 			const post = await Post.findById(postId);
 			if (post.userId == userId) {
@@ -131,16 +136,40 @@ export const updatePost = async (req, res) => {
 			return res.status(404).json({ message: "Post not found" });
 		}
 
-		post.title = req.body.title || post.title;
-		post.content = req.body.content || post.content;
-		post.image = req.body.image || post.image;
-		post.category = req.body.category || post.category;
-		post.slug = slugCreator(post.title);
+		post.title = req.body.title ?? post.title;
+		post.content = req.body.content ?? post.content;
+		post.image = req.body.image ?? post.image;
+		post.category = req.body.category ?? post.category;
+		post.isDraft = req.body.isDraft ?? post.isDraft;
 
 		const updatedPost = await post.save();
 		res
 			.status(200)
 			.json({ message: "Post has been updated successfully", updatedPost });
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.message });
+	}
+};
+
+//get all drafts
+export const getDrafts = async (req, res) => {
+	try {
+		const drafts = await Post.find({ userId: req.user.id, isDraft: true });
+		res.status(200).json({ message: "Drafts fetched successfully", drafts });
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Internal Server Error", error: error.message });
+	}
+};
+
+//get all my posts
+export const getMyPosts = async (req, res) => {
+	try {
+		const posts = await Post.find({ userId: req.user.id, isDraft: false });
+		res.status(200).json({ message: "My posts fetched successfully", posts });
 	} catch (error) {
 		res
 			.status(500)

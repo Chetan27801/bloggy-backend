@@ -1,20 +1,20 @@
 import User from "../models/User.model.js";
 
 //get user
-export const getUser = async (req, res) => {
-	try {
-		const id = req.params.id;
-		const user = await User.findById(id).select("-password");
-		if (!user) {
-			return res.status(404).json({ message: "User not found" });
-		}
-		res.status(200).json({ message: "User found", user });
-	} catch (error) {
-		res
-			.status(500)
-			.json({ message: "Internal Server Error", error: error.message });
-	}
-};
+// export const getUser = async (req, res) => {
+// 	try {
+// 		const id = req.user.id;
+// 		const user = await User.findById(id).select("-password");
+// 		if (!user) {
+// 			return res.status(404).json({ message: "User not found" });
+// 		}
+// 		res.status(200).json({ message: "User found", user });
+// 	} catch (error) {
+// 		res
+// 			.status(500)
+// 			.json({ message: "Internal Server Error", error: error.message });
+// 	}
+// };
 
 //get all user
 export const getAllUsers = async (req, res) => {
@@ -34,7 +34,7 @@ export const getAllUsers = async (req, res) => {
 //delete user by id
 export const deleteUser = async (req, res) => {
 	try {
-		const id = req.params.id;
+		const id = req.body.id;
 		const user = await User.findById(id);
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
@@ -51,7 +51,7 @@ export const deleteUser = async (req, res) => {
 //update user
 export const updataUser = async (req, res) => {
 	try {
-		const id = req.params.id;
+		const id = req.body.id;
 		const user = await User.findById(id);
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });

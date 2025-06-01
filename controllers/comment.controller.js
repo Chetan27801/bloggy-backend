@@ -37,7 +37,9 @@ export const getPostComments = async (req, res) => {
 		const comments = await Comment.find({
 			postId: id,
 			parentComment: null,
-		}).sort({ createdAt: -1 });
+		})
+			.populate("userId", "name email avatar bio role")
+			.sort({ createdAt: -1 });
 		res.status(200).json({
 			message: "successfully fetched all the comment for the post",
 			comments,
@@ -50,7 +52,7 @@ export const getPostComments = async (req, res) => {
 };
 export const deleteComment = async (req, res) => {
 	try {
-		const id = req.params.id;
+		const id = req.body.id;
 		const comment = await Comment.findById(id);
 		if (!comment) {
 			return res.status(404).json({ message: "Comment not found" });
@@ -72,7 +74,7 @@ export const deleteComment = async (req, res) => {
 };
 export const editComment = async (req, res) => {
 	try {
-		const id = req.params.id;
+		const id = req.body.id;
 		const comment = await Comment.findById(id);
 		if (!comment) {
 			res.status(404).json({ message: "Comment not found" });
@@ -93,7 +95,7 @@ export const editComment = async (req, res) => {
 };
 export const likeComments = async (req, res) => {
 	try {
-		const id = req.params.id;
+		const id = req.body.id;
 		const comment = await Comment.findById(id);
 		if (!comment) {
 			res.status(404).json({ message: "comment not found" });
@@ -126,6 +128,8 @@ export const getComments = async (req, res) => {
 		const sortDirection = order === "desc" ? -1 : 1;
 
 		const comment = await Comment.find()
+			.populate("userId", "name email avatar bio role")
+			.populate("postId", "title slug")
 			.sort({ createdAt: Number(sortDirection) })
 			.skip(skip)
 			.limit(Number(limit));
