@@ -33,7 +33,7 @@ const handleMulterError = (error, req, res, next) => {
 
 router.post(
 	"/image-upload",
-	upload.single("image"),
+	upload.array("image"),
 	handleMulterError,
 	imageUpload
 );

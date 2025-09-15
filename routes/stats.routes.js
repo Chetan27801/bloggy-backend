@@ -3,9 +3,11 @@ import {
 	totalPosts,
 	totalUsers,
 	totalComments,
-	publishedToday,
+	todaysStats,
 	totalAuthorPosts,
 	categoryStats,
+	weeklyStats,
+	monthlyStats,
 	// recentActivities,
 } from "../controllers/stats.controller.js";
 import { protect, roleCheck } from "./../middlewares/authMiddleware.js";
@@ -15,7 +17,9 @@ const router = express.Router();
 router.get("/total-posts", protect, roleCheck(["admin"]), totalPosts);
 router.get("/total-users", protect, roleCheck(["admin"]), totalUsers);
 router.get("/total-comments", protect, roleCheck(["admin"]), totalComments);
-router.get("/published-today", protect, roleCheck(["admin"]), publishedToday);
+router.get("/todays-stats", protect, roleCheck(["admin"]), todaysStats);
+router.get("/weekly-stats", protect, roleCheck(["admin"]), weeklyStats);
+router.get("/monthly-stats", protect, roleCheck(["admin"]), monthlyStats);
 // router.get(
 // 	"/recent-activities",
 // 	protect,
