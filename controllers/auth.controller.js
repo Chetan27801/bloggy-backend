@@ -15,7 +15,7 @@ export const registerUser = async (req, res) => {
 		const { name, email, password, avatar, role } = req.body;
 		//data validation
 
-		if (!name || !email || !password || !role || !avatar) {
+		if (!name || !email || !password || !role) {
 			return res.status(401).json({ message: "Enter all details" });
 		}
 
