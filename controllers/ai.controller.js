@@ -15,7 +15,7 @@ export const generateBlogPost = async (req, res) => {
 				.json({ message: "Please provide all required fields" });
 		}
 		const model = genAI.getGenerativeModel({
-			model: "gemini-2.0-flash",
+			model: "gemini-2.0-flash-lite",
 			generationConfig: {
 				responseMimeType: "application/json",
 			},
@@ -41,7 +41,7 @@ export const generateBlogPostIdeas = async (req, res) => {
 				.json({ message: "Please provide all required fields" });
 		}
 		const model = genAI.getGenerativeModel({
-			model: "gemini-2.0-flash",
+			model: "gemini-2.0-flash-lite",
 			generationConfig: {
 				responseMimeType: "application/json",
 			},
@@ -71,7 +71,7 @@ export const generateBlogPostSummary = async (req, res) => {
 				.json({ message: "Please provide all required fields" });
 		}
 		const model = genAI.getGenerativeModel({
-			model: "gemini-2.0-flash",
+			model: "gemini-2.0-flash-lite",
 			generationConfig: {
 				responseMimeType: "application/json",
 			},
